@@ -1,6 +1,9 @@
 imports:
     - { resource: config.yml }
 
+parameters:
+    cache_type: array
+
 framework:
     router:
         resource: "%kernel.root_dir%/config/routing_dev.yml"
@@ -26,9 +29,9 @@ monolog:
         #firephp:
         #    type:   firephp
         #    level:  info
-        #chromephp:
-        #    type:   chromephp
-        #    level:  info
+        chromephp:
+            type:   chromephp
+            level:  info
 
 #swiftmailer:
 #    delivery_address: me@example.com
