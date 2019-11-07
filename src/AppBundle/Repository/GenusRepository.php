@@ -4,6 +4,7 @@
 namespace AppBundle\Repository;
 
 
+use AppBundle\Entity\Genus;
 use Doctrine\ORM\EntityRepository;
 
 class GenusRepository extends EntityRepository
@@ -11,13 +12,14 @@ class GenusRepository extends EntityRepository
     /**
      * @return Genus[]
      */
-    public function findAllPublishedOrderedBySize()
+    public function findAllPublishedOrderedByRecentlyActive()
     {
         return $this->createQueryBuilder('genus')
             ->andWhere('genus.isPublished = :isPublished')
-            ->setParameter('isPublished', true)
-            ->orderBy('genus.speciesCount', 'DESC')
+            ->setParameter('isPublished', 1)
+            ->leftJoin('genus.notes', 'genus_note')
+            ->orderBy('genus_note.createdAt', 'ASC')
             ->getQuery()
-            ->execute();
+            ->getResult();
     }
 }

@@ -46,8 +46,7 @@ class GenusController extends Controller
         $em = $this->getDoctrine()->getManager();
 
         $genuses = $em->getRepository('AppBundle:Genus')
-            ->findAllPublishedOrderedBySize();
-
+            ->findAllPublishedOrderedByRecentlyActive();
 
         return $this->render('/genus/list.html.twig', [
             'genuses' => $genuses,
@@ -60,7 +59,6 @@ class GenusController extends Controller
     public function showAction($genusName)
     {
 
-        $funFact = 'Octopuses can change the color of their body in just *three-tenths* of a second!';
         $em = $this->getDoctrine()->getManager();
         $genus = $em->getRepository('AppBundle:Genus')
             ->findOneBy(['name' => $genusName]);
@@ -68,6 +66,9 @@ class GenusController extends Controller
         if(!$genus) {
             throw $this->createNotFoundException('Genus not found');
         }
+
+        $recentNotes = $em->getRepository('AppBundle:GenusNote')
+            ->findAllRecentNotesForGenus($genus);
 
         $funFact = $genus->getFunFact();
         $cache = $this->get('doctrine_cache.providers.my_markdown_cache');
@@ -86,6 +87,7 @@ class GenusController extends Controller
 
         return $this->render('genus/show.html.twig', array(
             'genus' => $genus,
+            'recentNoteCount' => count($recentNotes),
         ));
     }
 
