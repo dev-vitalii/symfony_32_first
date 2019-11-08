@@ -70,21 +70,6 @@ class GenusController extends Controller
         $recentNotes = $em->getRepository('AppBundle:GenusNote')
             ->findAllRecentNotesForGenus($genus);
 
-        $funFact = $genus->getFunFact();
-        $cache = $this->get('doctrine_cache.providers.my_markdown_cache');
-
-        $key = md5($funFact);
-
-        if ($cache->contains($key)) {
-            $funFact = $cache->fetch($key);
-        } else {
-            $funFact = $this->get('markdown.parser')
-                ->transform($funFact);
-            $cache->save($key, $funFact);
-        }
-
-        $genus->setFunFact($funFact);
-
         return $this->render('genus/show.html.twig', array(
             'genus' => $genus,
             'recentNoteCount' => count($recentNotes),
