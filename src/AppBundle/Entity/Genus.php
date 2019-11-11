@@ -3,6 +3,7 @@
 
 namespace AppBundle\Entity;
 
+use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -21,17 +22,21 @@ class Genus
 
     /**
      * @ORM\Column(type="string")
+     * @Assert\NotBlank()
      */
     private $name;
 
     /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\SubFamily")
      * @ORM\JoinColumn(nullable=false)
+     * @Assert\NotBlank()
      */
     private $subFamily;
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\NotBlank()
+     * @Assert\Range(min=0, minMessage="Negative species! Come on...")
      */
     private $speciesCount;
 
@@ -46,6 +51,12 @@ class Genus
     private $isPublished = true;
 
     /**
+     * @ORM\Column(type="date", nullable=true, options={"default" : "1970-01-01"})
+     * @Assert\NotBlank()
+     */
+    private $firstDiscoveredAt = '1970-01-01';
+
+    /**
      * @ORM\OneToMany(targetEntity="GenusNote", mappedBy="genus")
      * @ORM\OrderBy({"createdAt" = "DESC"})
      */
@@ -54,6 +65,14 @@ class Genus
     public function __construct()
     {
         $this->notes = new ArrayCollection();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
     }
 
     /**
@@ -139,6 +158,22 @@ class Genus
     public function getUpdatedAt()
     {
         return new \DateTime('-'.rand(0, 100).' days');
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFirstDiscoveredAt()
+    {
+        return $this->firstDiscoveredAt;
+    }
+
+    /**
+     * @param mixed $firstDiscoveredAt
+     */
+    public function setFirstDiscoveredAt($firstDiscoveredAt)
+    {
+        $this->firstDiscoveredAt = $firstDiscoveredAt;
     }
 
     /**

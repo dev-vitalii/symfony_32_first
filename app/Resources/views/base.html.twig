@@ -24,6 +24,13 @@
         <li><a href="#">Login</a></li>
     </ul>
 </header>
+<div class="main-content">
+    {% for msg in app.session.flashBag.get('success') %}
+        <div class="alert alert-success">
+            {{ msg }}
+        </div>
+    {% endfor %}
+</div>
 {% block body %}{% endblock %}
 <div class="footer">
     <p class="footer-text">Made with <span class="heart"><3</span> <a href="https://knpuniversity.com">KnpUniversity</a></p>

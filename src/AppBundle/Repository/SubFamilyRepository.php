@@ -10,4 +10,9 @@ namespace AppBundle\Repository;
  */
 class SubFamilyRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function createAlphabeticalQueryBuilder()
+    {
+        return $this->createQueryBuilder('sub_family')
+            ->orderBy('sub_family.name', 'ASC');
+    }
 }
