@@ -5,6 +5,7 @@ AppBundle\Entity\Genus:
     speciesCount: <numberBetween(100, 100000)>
     funFact: <sentence()>
     isPublished: <boolean(75)>
+    firstDiscoveredAt: <dateTimeBetween('-6 months', 'now')>
 
 AppBundle\Entity\GenusNote:
   genus.note_{1..100}:
@@ -17,3 +18,7 @@ AppBundle\Entity\GenusNote:
 AppBundle\Entity\SubFamily:
   genus.sub_{1..10}:
     name: <text(20)>
+
+AppBundle\Entity\User:
+  user_{1..10}:
+    email: weaverryan+<current()>@gmail.com
