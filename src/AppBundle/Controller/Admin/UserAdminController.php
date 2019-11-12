@@ -1,19 +1,22 @@
 <?php
 
-namespace AppBundle\Controller;
+namespace AppBundle\Controller\Admin;
 
 use AppBundle\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class UserAdminController
  * @Route("/admin")
+ * @Security("is_granted('ROLE_ADMIN')")
  */
 class UserAdminController extends Controller
 {
     /**
-     * @Route("/users", name="users_list")
+     * @Route("/users", name="admin_users_list")
      */
     public function indexAction()
     {
@@ -27,9 +30,29 @@ class UserAdminController extends Controller
     /**
      * @Route("/user/{id}/edit", name="admin_user_edit")
      */
-    public function editUserAction(User $user)
+    public function editUserAction(Request $request, User $user)
     {
-        dump($user);
-        die();
+        $form = $this->createForm('AppBundle\Form\EditUserFormType', $user);
+
+        $form->handleRequest($request);
+        //dump($this->getUser());
+        if($form->isSubmitted() && $form->isValid()) {
+            $user_data = $form->getData();
+
+            $em = $this->getDoctrine()->getManager();
+            $user_instance = $em->find('AppBundle:User', $request->get('id'));
+            $user_instance->setRoles($user_data->getRoles());
+            $user_instance->setEmail($user_data->getEmail());
+            $em->flush();
+            $this->addFlash('success', 'User updated!');
+            //force logout user
+            //$this->get('security.token_storage')->setToken(NULL);
+            return $this->redirectToRoute('admin_users_list');
+        }
+
+        return $this->render('admin/user/edit.html.twig',[
+            'user_edit_form' => $form->createView(),
+            'user' => $user,
+        ]);
     }
 }

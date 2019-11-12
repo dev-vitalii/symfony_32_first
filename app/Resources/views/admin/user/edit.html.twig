@@ -1,8 +1,9 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>User list</h1>
-    {% for user in users %}
-        <a href="{{ path('admin_user_edit', { 'id': user.id }) }}">{{ user.username }}</a><br/>
-    {% endfor %}
+    <h1>Edit user: {{ user.username }}</h1>
+    {{ form_start(user_edit_form) }}
+    {{ form_widget(user_edit_form) }}
+    <button type="submit" class="btn btn-primary" formnovalidate>Save</button>
+    {{ form_end(user_edit_form) }}
 {% endblock %}

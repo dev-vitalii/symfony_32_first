@@ -7,6 +7,15 @@ security:
         our_users:
             entity: { class: AppBundle\Entity\User, property: email }
 
+    encoders:
+      AppBundle\Entity\User: bcrypt
+
+#    access_control:
+#        - { path: ^/admin, roles: ROLE_ADMIN }
+
+    role_hierarchy:
+        ROLE_ADMIN: [ROLE_MANAGE_GENUS, ROLE_ALLOWED_TO_SWITCH]
+
     firewalls:
         # disables authentication for assets and the profiler, adapt it according to your needs
         dev:
@@ -15,6 +24,7 @@ security:
 
         main:
             anonymous: ~
+            switch_user: ~
 
             guard:
                 authenticators:

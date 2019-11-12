@@ -1,24 +1,8 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <table class="table table-striped">
-        <thead>
-        <tr>
-            <th>Genus</th>
-            <th># of species</th>
-            <th>Last updated</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for genus in genuses %}
-            <tr>
-                <td>
-                    <a href="{{ url('admin_edit_genus', { 'id': genus.id }) }}">{{ genus.name }}</a>
-                </td>
-                <td>{{ genus.speciesCount }}</td>
-                <td>{{ genus.updatedAt|date('Y-m-d') }}</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    <h1>User list</h1>
+    {% for user in users %}
+        <a href="{{ path('admin_user_edit', { 'id': user.id }) }}">{{ user.username }}</a><br/>
+    {% endfor %}
 {% endblock %}
