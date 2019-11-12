@@ -1,0 +1,8 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>User list</h1>
+    {% for user in users %}
+        <a href="{{ path('admin_user_edit', { 'id': user.id }) }}">{{ user.username }}</a><br/>
+    {% endfor %}
+{% endblock %}
