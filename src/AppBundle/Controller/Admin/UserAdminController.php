@@ -35,7 +35,6 @@ class UserAdminController extends Controller
         $form = $this->createForm('AppBundle\Form\EditUserFormType', $user);
 
         $form->handleRequest($request);
-        //dump($this->getUser());
         if($form->isSubmitted() && $form->isValid()) {
             $user_data = $form->getData();
 
@@ -45,8 +44,6 @@ class UserAdminController extends Controller
             $user_instance->setEmail($user_data->getEmail());
             $em->flush();
             $this->addFlash('success', 'User updated!');
-            //force logout user
-            //$this->get('security.token_storage')->setToken(NULL);
             return $this->redirectToRoute('admin_users_list');
         }
 

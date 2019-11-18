@@ -25,7 +25,6 @@ framework:
     translator:      { fallbacks: ["%locale%"] }
     default_locale:  "%locale%"
     trusted_hosts:   ~
-    trusted_proxies: ~
     session:
         # http://symfony.com/doc/current/reference/configuration/framework.html#handler-id
         handler_id:  session.handler.native_file
@@ -73,7 +72,7 @@ doctrine_cache:
         my_markdown_cache:
             type: "%cache_type%"
             file_system:
-                directory: %kernel.cache_dir%/markdown_cache
+                directory: "%kernel.cache_dir%/markdown_cache"
 
 ## Swiftmailer Configuration
 #swiftmailer:
