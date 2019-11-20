@@ -9,6 +9,8 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class GenusFormType extends AbstractType
@@ -24,7 +26,9 @@ class GenusFormType extends AbstractType
                     return $repo->createAlphabeticalQueryBuilder();
                 }
             ])
-            ->add('speciesCount')
+            ->add('speciesCount', null, [
+                'help' => 'Set count of species)',
+            ])
             ->add('funFact')
             ->add('isPublished', ChoiceType::class, [
                 'choices' => [
@@ -33,8 +37,8 @@ class GenusFormType extends AbstractType
                 ]
             ])
             ->add('firstDiscoveredAt', DateType::class, [
-                'widget' => 'single_text',
-                'attr' => ['class' => 'js-datepicker'],
+//                'widget' => 'single_text',
+//                'attr' => ['class' => 'js-datepicker'],
                 'html5' => false,
             ])
         ;
@@ -51,4 +55,10 @@ class GenusFormType extends AbstractType
     {
         return 'app_bundle_genus_form_type';
     }
+
+    public function finishView(FormView $view, FormInterface $form, array $options)
+    {
+        $view['funFact']->vars['help'] = 'For example, Leatherback sea turtles can travel more than 10,000 miles every year!';
+    }
+
 }

@@ -1,11 +1,18 @@
 {{ form_start(genusForm) }}
-                {{ form_row(genusForm.name) }}
-                {{ form_row(genusForm.subFamily) }}
-                {{ form_row(genusForm.speciesCount, {
-                    'label': 'Number of Species'
-                }) }}
-                {{ form_row(genusForm.funFact) }}
-                {{ form_row(genusForm.isPublished) }}
-                {{ form_row(genusForm.firstDiscoveredAt) }}
+    {{ form_row(genusForm.name) }}
+    {{ form_row(genusForm.subFamily, {
+        'label': 'Taxonomic Subfamily',
+        'attr': {
+            'class': 'foo'
+        }
+    }) }}
+    {{ form_row(genusForm.speciesCount, {
+        'label': 'Number of Species'
+    }) }}
+    {{ form_row(genusForm.funFact) }}
+    {{ form_row(genusForm.isPublished, {
+        help: 'Should this genus be shown on the site?'
+    }) }}
+    {{ form_row(genusForm.firstDiscoveredAt) }}
 <button type="submit" class="btn btn-primary" formnovalidate>Save</button>
 {{ form_end(genusForm) }}
