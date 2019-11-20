@@ -6,6 +6,7 @@ AppBundle\Entity\Genus:
     funFact: <sentence()>
     isPublished: <boolean(75)>
     firstDiscoveredAt: <dateTimeBetween('-6 months', 'now')>
+    genusScientists: '3x @user.aquanaut_*'
 
 AppBundle\Entity\GenusNote:
   genus.note_{1..100}:
@@ -24,3 +25,14 @@ AppBundle\Entity\User:
     email: weaverryan+<current()>@gmail.com
     plainPassword: iliketurtles
     roles: ['ROLE_ADMIN']
+    firstName: <firstName()>
+    lastName: <lastName()>
+    avatarUri: <imageUrl(100, 100, 'abstract')>
+  user.aquanaut_{1..10}:
+        email: aquanaut<current()>@example.org
+        plainPassword: aquanote
+        isScientist: true
+        firstName: <firstName()>
+        lastName: <lastName()>
+        universityName: <company()> University
+        avatarUri: <imageUrl(100, 100, 'abstract')>

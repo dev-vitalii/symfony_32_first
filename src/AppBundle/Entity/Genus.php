@@ -6,6 +6,7 @@ namespace AppBundle\Entity;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity(repositoryClass="AppBundle\Repository\GenusRepository")
@@ -54,7 +55,13 @@ class Genus
      * @ORM\Column(type="date", nullable=true, options={"default" : "1970-01-01"})
      * @Assert\NotBlank()
      */
-    private $firstDiscoveredAt = '1970-01-01';
+    private $firstDiscoveredAt;
+
+    /**
+     * @ORM\Column(type="string", unique=true)
+     * @Gedmo\Slug(fields={"name"})
+     */
+    private $slug;
 
     /**
      * @ORM\OneToMany(targetEntity="GenusNote", mappedBy="genus")
@@ -62,9 +69,16 @@ class Genus
      */
     private $notes;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\User", inversedBy="studiedGenuses", fetch="EXTRA_LAZY")
+     * @ORM\JoinTable(name="genus_scientist")
+     */
+    private $genusScientists;
+
     public function __construct()
     {
         $this->notes = new ArrayCollection();
+        $this->genusScientists = new ArrayCollection();
     }
 
     /**
@@ -169,6 +183,22 @@ class Genus
     }
 
     /**
+     * @return mixed
+     */
+    public function getSlug()
+    {
+        return $this->slug;
+    }
+
+    /**
+     * @param mixed $slug
+     */
+    public function setSlug($slug)
+    {
+        $this->slug = $slug;
+    }
+
+    /**
      * @param mixed $firstDiscoveredAt
      */
     public function setFirstDiscoveredAt($firstDiscoveredAt)
@@ -182,6 +212,44 @@ class Genus
     public function getNotes()
     {
         return $this->notes;
+    }
+
+    /**
+     * @return ArrayCollection|User[]
+     */
+    public function getGenusScientists()
+    {
+        return $this->genusScientists;
+    }
+
+//    /**
+//     * @param ArrayCollection|User[]
+//     */
+//    public function setGenusScientists($genusScientists)
+//    {
+//        $this->genusScientists = $genusScientists;
+//    }
+
+    /**
+     * @param User
+     */
+    public function addGenusScientist(User $user)
+    {
+        if ($this->genusScientists->contains($user)) {
+            return;
+        }
+        $this->genusScientists[] = $user;
+    }
+
+    /**
+     * @param User
+     */
+    public function removeGenusScientist(User $user)
+    {
+        if (!$this->genusScientists->contains($user)) {
+            return;
+        }
+        $this->genusScientists->removeElement($user);
     }
 
 }

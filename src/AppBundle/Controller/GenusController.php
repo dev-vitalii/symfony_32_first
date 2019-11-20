@@ -17,11 +17,17 @@ class GenusController extends Controller
     */
     public function newAction()
     {
+        $em = $this->getDoctrine()->getManager();
         $genus = new Genus();
+        $user = $em->getRepository('AppBundle:User')
+            ->findOneBy(['email' => 'aquanaut1@example.org']);
+        $genus->addGenusScientist($user);
         $genus->setName('Octopus'.rand(1,100));
         $genus->setSpeciesCount(rand(1,10));
-        $genus->setSubFamily('Octopodinae');
-        //$genus->setFunFact( 'Fun fact))' );
+        $subFamily = $em->getRepository('AppBundle:SubFamily')
+            ->findAny();
+        $genus->setSubFamily($subFamily);
+        $genus->setFunFact( 'Fun fact))' );
 
         $note = new GenusNote();
         $note->setUsername('AquaWeaver');
@@ -30,12 +36,16 @@ class GenusController extends Controller
         $note->setCreatedAt(new \DateTime('-1 month'));
         $note->setGenus($genus);
 
-        $em = $this->getDoctrine()->getManager();
+
         $em->persist($genus);
         $em->persist($note);
         $em->flush();
 
-        return new Response('<html><body>Genus created</body></html>');
+        return new Response(sprintf(
+            '<html><body>Genus created! <a href="%s">%s</a></body></html>',
+            $this->generateUrl('genus_show', ['slug' => $genus->getSlug()]),
+            $genus->getName()
+        ));
     }
 
     /**
@@ -54,14 +64,12 @@ class GenusController extends Controller
     }
 
     /**
-     * @Route("/genus/{genusName}", name="genus_show")
+     * @Route("/genus/{slug}", name="genus_show")
      */
-    public function showAction($genusName)
+    public function showAction(Genus $genus)
     {
 
         $em = $this->getDoctrine()->getManager();
-        $genus = $em->getRepository('AppBundle:Genus')
-            ->findOneBy(['name' => $genusName]);
 
         if(!$genus) {
             throw $this->createNotFoundException('Genus not found');
@@ -77,7 +85,7 @@ class GenusController extends Controller
     }
 
     /**
-     * @Route("/genus/{name}/notes", name="genus_show_notes")
+     * @Route("/genus/{slug}/notes", name="genus_show_notes")
      * @Method("GET")
      */
     public function getNotesAction(Genus $genus)
@@ -99,5 +107,28 @@ class GenusController extends Controller
         ];
 
         return new JsonResponse( $data );
+    }
+
+    /**
+     * @Route("/genus/{genusId}/scientists/{userId}", name="genus_scientists_remove")
+     * @Method("DELETE")
+     */
+    public function removeGenusScientistAction($genusId, $userId)
+    {
+        $em = $this->getDoctrine()->getManager();
+        /** @var Genus $genus */
+        $genus = $em->getRepository('AppBundle:Genus')->find($genusId);
+        if (!$genus) {
+            throw $this->createNotFoundException('genus not found');
+        }
+        $genusScientist = $em->getRepository('AppBundle:User')->find($userId);
+        if (!$genusScientist) {
+            throw $this->createNotFoundException('user not found');
+        }
+        $genus->removeGenusScientist($genusScientist);
+        $em->persist($genus);
+        $em->flush();
+
+        return new Response(null, 204);
     }
 }

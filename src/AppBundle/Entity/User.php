@@ -3,6 +3,7 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\Role\Role;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -49,6 +50,42 @@ class User implements UserInterface
      * @ORM\Column(type="json_array")
      */
     private $roles = ['ROLE_MANAGE_GENUS'];
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true, options={"default" : false})
+     */
+    private $isScientist;
+
+    /**
+     * @ORM\Column(type="string")
+     */
+    private $avatarUri;
+
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $firstName;
+
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $lastName;
+
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $universityName;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Genus", mappedBy="genusScientists")
+     * @ORM\OrderBy({"name" = "ASC"})
+     */
+    private $studiedGenuses;
+
+    public function __construct()
+    {
+        $this->studiedGenuses = new ArrayCollection();
+    }
 
     /**
      * @return mixed
@@ -125,5 +162,99 @@ class User implements UserInterface
         // Doctrine *not* saving this entity, if only plainPassword changes
         $this->password = null;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getIsScientist()
+    {
+        return $this->isScientist;
+    }
+
+    /**
+     * @param mixed $isScientist
+     */
+    public function setIsScientist($isScientist)
+    {
+        $this->isScientist = $isScientist;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAvatarUri()
+    {
+        return $this->avatarUri;
+    }
+
+    /**
+     * @param mixed $avatarUri
+     */
+    public function setAvatarUri($avatarUri)
+    {
+        $this->avatarUri = $avatarUri;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFirstName()
+    {
+        return $this->firstName;
+    }
+
+    /**
+     * @param mixed $firstName
+     */
+    public function setFirstName($firstName)
+    {
+        $this->firstName = $firstName;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLastName()
+    {
+        return $this->lastName;
+    }
+
+    /**
+     * @param mixed $lastName
+     */
+    public function setLastName($lastName)
+    {
+        $this->lastName = $lastName;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUniversityName()
+    {
+        return $this->universityName;
+    }
+
+    /**
+     * @param mixed $universityName
+     */
+    public function setUniversityName($universityName)
+    {
+        $this->universityName = $universityName;
+    }
+
+    public function getFullName()
+    {
+        return $this->firstName . ' ' . $this->lastName;
+    }
+
+    /**
+     * @return ArrayCollection|Genus[]
+     */
+    public function getStudiedGenuses()
+    {
+        return $this->studiedGenuses;
+    }
+
 
 }

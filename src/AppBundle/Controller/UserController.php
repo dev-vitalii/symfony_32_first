@@ -41,4 +41,15 @@ class UserController extends Controller
             'form' => $form->createView()
         ]);
     }
+
+    /**
+     * @Route("/users/{id}", name="user_show")
+     */
+    public function showAction(User $user)
+    {
+        return $this->render('user/show.html.twig', array(
+            'user' => $user
+        ));
+    }
+
 }

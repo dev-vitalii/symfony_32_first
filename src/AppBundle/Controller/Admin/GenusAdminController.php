@@ -66,6 +66,7 @@ class GenusAdminController extends Controller
      * @Route("/genus/{id}/edit", name="admin_edit_genus")
      */
     public function editAction(Request $request, Genus $genus, MessageManager $messageManager) {
+        //dump($genus);die();
         $form = $this->createForm(GenusFormType::class, $genus);
 
         $form->handleRequest($request);
