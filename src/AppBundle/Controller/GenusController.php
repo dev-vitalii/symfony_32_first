@@ -4,6 +4,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Genus;
 use AppBundle\Entity\GenusNote;
+use AppBundle\Entity\GenusScientist;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -21,7 +22,8 @@ class GenusController extends Controller
         $genus = new Genus();
         $user = $em->getRepository('AppBundle:User')
             ->findOneBy(['email' => 'aquanaut1@example.org']);
-        $genus->addGenusScientist($user);
+        //$genus->addGenusScientist($user);
+
         $genus->setName('Octopus'.rand(1,100));
         $genus->setSpeciesCount(rand(1,10));
         $subFamily = $em->getRepository('AppBundle:SubFamily')
@@ -36,7 +38,13 @@ class GenusController extends Controller
         $note->setCreatedAt(new \DateTime('-1 month'));
         $note->setGenus($genus);
 
+        $genusScientist = new GenusScientist();
+        $genusScientist->setGenus($genus);
+        $genusScientist->setUser($user);
+        $genusScientist->setYearsStudied(10);
 
+
+        $em->persist($genusScientist);
         $em->persist($genus);
         $em->persist($note);
         $em->flush();
@@ -116,17 +124,12 @@ class GenusController extends Controller
     public function removeGenusScientistAction($genusId, $userId)
     {
         $em = $this->getDoctrine()->getManager();
-        /** @var Genus $genus */
-        $genus = $em->getRepository('AppBundle:Genus')->find($genusId);
-        if (!$genus) {
-            throw $this->createNotFoundException('genus not found');
-        }
-        $genusScientist = $em->getRepository('AppBundle:User')->find($userId);
-        if (!$genusScientist) {
-            throw $this->createNotFoundException('user not found');
-        }
-        $genus->removeGenusScientist($genusScientist);
-        $em->persist($genus);
+        $genusScientist = $em->getRepository('AppBundle:GenusScientist')
+            ->findOneBy([
+                'user' => $userId,
+                'genus' => $genusId
+            ]);
+        $em->remove($genusScientist);
         $em->flush();
 
         return new Response(null, 204);

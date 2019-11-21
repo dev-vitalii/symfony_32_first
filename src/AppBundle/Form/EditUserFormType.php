@@ -2,6 +2,9 @@
 
 namespace AppBundle\Form;
 
+use AppBundle\Entity\Genus;
+use Doctrine\ORM\EntityRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -21,6 +24,13 @@ class EditUserFormType extends AbstractType
                     'Manager' => 'ROLE_MANAGER',
                 ],
             ])
+//            ->add('studiedGenuses', EntityType::class, [
+//                'class' => Genus::class,
+//                'multiple' => true,
+//                'expanded' => true,
+//                'choice_label' => 'name',
+//                'by_reference' => false, //by reference needed for call adder and remover from non-owning side of many-to-man relation
+//            ])
         ;
     }
 

@@ -3,6 +3,8 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Repository\GenusRepository;
+use Doctrine\Common\Collections\Criteria;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
@@ -70,8 +72,17 @@ class Genus
     private $notes;
 
     /**
-     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\User", inversedBy="studiedGenuses", fetch="EXTRA_LAZY")
-     * @ORM\JoinTable(name="genus_scientist")
+     * @XXORM\ManyToMany(targetEntity="AppBundle\Entity\User", inversedBy="studiedGenuses", fetch="EXTRA_LAZY")
+     * @XXORM\JoinTable(name="genus_scientist")
+     */
+    /**
+     * @ORM\OneToMany(targetEntity="GenusScientist",
+     *      mappedBy="genus",
+     *      fetch="EXTRA_LAZY",
+     *      orphanRemoval=true,
+     *      cascade={"persist"}
+     * )
+     * @Assert\Valid()
      */
     private $genusScientists;
 
@@ -215,7 +226,7 @@ class Genus
     }
 
     /**
-     * @return ArrayCollection|User[]
+     * @return ArrayCollection|GenusScientist[]
      */
     public function getGenusScientists()
     {
@@ -230,26 +241,61 @@ class Genus
 //        $this->genusScientists = $genusScientists;
 //    }
 
-    /**
-     * @param User
-     */
-    public function addGenusScientist(User $user)
-    {
-        if ($this->genusScientists->contains($user)) {
-            return;
-        }
-        $this->genusScientists[] = $user;
-    }
+//    /**
+//     * @param User
+//     */
+//    public function addGenusScientist(User $user)
+//    {
+//        if ($this->genusScientists->contains($user)) {
+//            return;
+//        }
+//        $this->genusScientists[] = $user;
+//        $user->addStudiedGenus($this);
+//    }
+
+//    /**
+//     * @param User
+//     */
+//    public function removeGenusScientist(User $user)
+//    {
+//        if (!$this->genusScientists->contains($user)) {
+//            return;
+//        }
+//        $this->genusScientists->removeElement($user);
+//        $user->removeStudiedGenus($this);
+//    }
+
 
     /**
-     * @param User
+     * @param GenusScientist
      */
-    public function removeGenusScientist(User $user)
+    public function addGenusScientist(GenusScientist $genusScientist)
     {
-        if (!$this->genusScientists->contains($user)) {
+        if ($this->genusScientists->contains($genusScientist)) {
             return;
         }
-        $this->genusScientists->removeElement($user);
+        $this->genusScientists[] = $genusScientist;
+        // needed to update the owning side of the relationship!
+        $genusScientist->setGenus($this);
+    }
+    /**
+     * @param GenusScientist
+     */
+    public function removeGenusScientist(GenusScientist $genusScientist)
+    {
+        if (!$this->genusScientists->contains($genusScientist)) {
+            return;
+        }
+        $this->genusScientists->removeElement($genusScientist);
+        // needed to update the owning side of the relationship!
+        $genusScientist->setGenus(null);
+    }
+
+    public function getExpertScientists()
+    {
+        return $this->getGenusScientists()->matching(
+            GenusRepository::createExpertCriteria()
+        );
     }
 
 }

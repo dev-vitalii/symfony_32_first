@@ -77,8 +77,11 @@ class User implements UserInterface
     private $universityName;
 
     /**
-     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Genus", mappedBy="genusScientists")
-     * @ORM\OrderBy({"name" = "ASC"})
+     * @XXORM\ManyToMany(targetEntity="AppBundle\Entity\Genus", mappedBy="genusScientists")
+     * @XXORM\OrderBy({"name" = "ASC"})
+     */
+    /**
+     * @ORM\OneToMany(targetEntity="GenusScientist", mappedBy="user")
      */
     private $studiedGenuses;
 
@@ -249,12 +252,53 @@ class User implements UserInterface
     }
 
     /**
-     * @return ArrayCollection|Genus[]
+     * @return ArrayCollection|GenusScientist[]
      */
     public function getStudiedGenuses()
     {
         return $this->studiedGenuses;
     }
 
+//    public function addStudiedGenus(Genus $genus)
+//    {
+//        if ($this->studiedGenuses->contains($genus)) {
+//            return;
+//        }
+//        $this->studiedGenuses[] = $genus;
+//        $genus->addGenusScientist($this);
+//    }
 
+//    public function removeStudiedGenus(Genus $genus)
+//    {
+//        if(!$this->studiedGenuses->contains($genus)) {
+//            return;
+//        }
+//        $this->studiedGenuses->removeElement($genus);
+//        $genus->removeGenusScientist($this);
+//    }
+
+//    /**
+//     * @param GenusScientist
+//     */
+//    public function addStudiedGenus(GenusScientist $genusScientist)
+//    {
+//        if ($this->studiedGenuses->contains($genusScientist)) {
+//            return;
+//        }
+//        $this->studiedGenuses[] = $genusScientist;
+//        // needed to update the owning side of the relationship!
+//        $genusScientist->setUser($this);
+//    }
+//    /**
+//     * @param GenusScientist
+//     */
+//    public function removeStudiedGenus(GenusScientist $genusScientist)
+//    {
+//        if (!$this->studiedGenuses->contains($genusScientist)) {
+//            return;
+//        }
+//        $this->studiedGenuses->removeElement($genusScientist);
+//        // needed to update the owning side of the relationship!
+//        $genusScientist->setUser(null);
+//    }
 }

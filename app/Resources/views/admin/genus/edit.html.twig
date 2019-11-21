@@ -10,3 +10,7 @@
         </div>
     </div>
 {% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/GenusAdminForm.js') }}"></script>
+{% endblock %}

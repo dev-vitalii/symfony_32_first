@@ -1,9 +1,15 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Edit user: {{ user.username }}</h1>
-    {{ form_start(user_edit_form) }}
-    {{ form_widget(user_edit_form) }}
-    <button type="submit" class="btn btn-primary" formnovalidate>Save</button>
-    {{ form_end(user_edit_form) }}
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <h1>Edit user: {{ user.username }}</h1>
+                {{ form_start(user_edit_form) }}
+                {{ form_widget(user_edit_form) }}
+                <button type="submit" class="btn btn-primary" formnovalidate>Save</button>
+                {{ form_end(user_edit_form) }}
+            </div>
+        </div>
+    </div>
 {% endblock %}
