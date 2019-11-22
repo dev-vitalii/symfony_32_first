@@ -8,6 +8,7 @@ use AppBundle\Entity\GenusScientist;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -68,6 +69,24 @@ class GenusController extends Controller
 
         return $this->render('/genus/list.html.twig', [
             'genuses' => $genuses,
+        ]);
+    }
+
+    /**
+     * @Route("/genus/feed", name="genus_feed")
+     */
+    public function feedAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $id = $request->query->get('id');
+        $genus = $em->getRepository('AppBundle:Genus')->find($id);
+        $menu = ['shrimp', 'clams', 'lobsters', 'dolphin'];
+        $meal = $menu[random_int(0, 3)];
+        $this->addFlash('info', $meal);
+        return $this->redirectToRoute('easyadmin', [
+            'action' => 'show',
+            'entity' => $request->query->get('entity'),
+            'id' => $id
         ]);
     }
 

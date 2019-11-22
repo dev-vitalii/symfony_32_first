@@ -10,11 +10,11 @@ security:
     encoders:
       AppBundle\Entity\User: bcrypt
 
-#    access_control:
-#        - { path: ^/admin, roles: ROLE_ADMIN }
+    access_control:
+        - { path: ^/easyadmin, roles: ROLE_ADMIN }
 
     role_hierarchy:
-        ROLE_ADMIN: [ROLE_MANAGE_GENUS, ROLE_ALLOWED_TO_SWITCH]
+        ROLE_ADMIN: [ROLE_MANAGE_GENUS, ROLE_ALLOWED_TO_SWITCH, ROLE_SUPERADMIN]
 
     firewalls:
         # disables authentication for assets and the profiler, adapt it according to your needs

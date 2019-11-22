@@ -1,0 +1,112 @@
+easy_admin:
+  site_name: 'Aqua<i>Note</i>'
+  design:
+    brand_color: '#81b9ba'
+    templates:
+      field_id: 'admin/fields/_id.html.twig'
+    form_theme:
+      - horizontal
+      - easy_admin/_form_theme.html.twig
+  assets:
+    css: ['css/custom_backend.css']
+    js:
+      - 'https://unpkg.com/snarkdown@1.2.2/dist/snarkdown.umd.js'
+      - 'js/custom_backend.js'
+  list:
+    title: 'List of %%entity_label%%'
+    actions: ['show', 'export']
+  entities:
+    Genus:
+      class: AppBundle\Entity\Genus
+      controller: AppBundle\Controller\EasyAdmin\GenusController
+      label: Genuses
+      help: Genuses are not covered under warranty!
+      list:
+        help: Do not feed!
+        actions:
+          - { name: 'edit', icon: 'pencil', label: 'Edit' }
+          - { name: 'show', icon: 'info-circle', label: '' }
+        fields:
+          - 'id'
+          - 'name'
+          - 'isPublished'
+          - { property: 'firstDiscoveredAt', format: 'M Y', label: 'Discovered' }
+          - { property: 'funFact' }
+          - { property: 'speciesCount', format: '%b' }
+      search:
+        help: null
+        fields: ['id', 'name']
+      show:
+        actions:
+          -
+            name: 'genus_feed'
+            type: 'route'
+            label: 'Feed genus'
+            css_class: 'btn btn-info'
+            icon: 'cutlery'
+          - { name: 'changePublishedStatus', css_class: 'btn' }
+      form:
+        fields:
+          - property: id
+            type_options: {disabled: true}
+          - name
+          - speciesCount
+          - { property: 'funFact', type: 'textarea', css_class: 'js-markdown-input' }
+          - isPublished
+          - { property: 'firstDiscoveredAt', type_options: { widget: 'single_text' }}
+          - { property: 'subFamily', type: 'easyadmin_autocomplete' }
+          #                    - property: 'genusScientists'
+          #                      type: 'text'
+          #                      type_options:
+          #                          by_reference: false
+          #                          mapped: false
+          #                          attr: { class: 'js-genus-scientists-field' }
+          -   property: 'genusScientists'
+              type: 'collection'
+              type_options:
+                entry_type: AppBundle\Form\GenusScientistEmbeddedForm
+                allow_delete: true
+                allow_add: true
+                by_reference: false
+      new:
+        fields:
+          - '-id'
+      edit:
+        fields:
+          - property: 'slug'
+            help: 'unique auto-generated value'
+            type_options: { disabled: true }
+    GenusNote:
+      class: AppBundle\Entity\GenusNote
+      label: Genus Notes
+      list:
+        title: List of notes
+        fields:
+          - id
+          - username
+          - { property: 'userAvatarFilename', label: 'User avatar', type: 'image', base_path: '/images/', sortable: false }
+          - createdAt
+          - genus
+        sort: ['genus.name', 'ASC']
+    SubFamily:
+      class: AppBundle\Entity\SubFamily
+      list:
+        actions: ['-show']
+      disabled_actions: ['show']
+    User:
+      class: AppBundle\Entity\User
+      controller: AppBundle\Controller\EasyAdmin\UserController
+      list:
+        fields:
+          - id
+          - { property: 'fullName', template: 'admin/fields/_field_user_full_name.html.twig' }
+          - { property: 'avatarUri', label: 'Avatar', type: 'image', sortable: false }
+          - { property: 'email', type: 'email' }
+          - { property: 'isScientist', label: 'Is scientist?', type: 'boolean' }
+      form:
+        fields:
+          - property: 'email'
+          - property: 'isScientist'
+          - { property: 'fullName', type: 'text' }
+          - property: 'avatarUri'
+          - property: 'universityName'

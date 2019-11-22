@@ -77,6 +77,11 @@ class User implements UserInterface
     private $universityName;
 
     /**
+     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
+     */
+    private $updatedAt;
+
+    /**
      * @XXORM\ManyToMany(targetEntity="AppBundle\Entity\Genus", mappedBy="genusScientists")
      * @XXORM\OrderBy({"name" = "ASC"})
      */
@@ -84,6 +89,12 @@ class User implements UserInterface
      * @ORM\OneToMany(targetEntity="GenusScientist", mappedBy="user")
      */
     private $studiedGenuses;
+
+    /**
+     * @ORM\OneToOne(targetEntity="User")
+     * @ORM\JoinColumn(name="last_updated_by_id", referencedColumnName="id", nullable=true)
+     */
+    protected $lastUpdatedBy;
 
     public function __construct()
     {
@@ -301,4 +312,50 @@ class User implements UserInterface
 //        // needed to update the owning side of the relationship!
 //        $genusScientist->setUser(null);
 //    }
+
+    public function setFullName($fullName)
+    {
+        $names = explode(' ', $fullName);
+        $firstName = array_shift($names);
+        $lastName = implode(' ', $names);
+        $this->setFirstName($firstName);
+        $this->setLastName($lastName);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * @param mixed $updatedAt
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updatedAt = $updatedAt;
+    }
+
+    /**
+     * @return User
+     */
+    public function getLastUpdatedBy()
+    {
+        return $this->lastUpdatedBy;
+    }
+
+    /**
+     * @param User $lastUpdatedBy
+     */
+    public function setLastUpdatedBy(User $lastUpdatedBy)
+    {
+        $this->lastUpdatedBy = $lastUpdatedBy;
+    }
+
+    public function __toString()
+    {
+        return (string) $this->getFullName() ? $this->getFullName() : $this->getEmail();
+    }
 }
